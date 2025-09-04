@@ -44,7 +44,7 @@ string generate_random_string(int length) {
     return result;
 }
 
-int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int l, int r, string s) {
+int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int &l, int &r) {
     auto iterator_l = lower_bound(b.begin(), b.end(), l);
     auto iterator_r = upper_bound(b.begin(), b.end(), r);
     if (iterator_r == iterator_l) {
@@ -124,7 +124,7 @@ int main(){
         int l = queries[q].first;
         int r = queries[q].second;
 
-        int my_ans = my_solve(pref_a, b_pos, suf_c, l, r, s);
+        int my_ans = my_solve(pref_a, b_pos, suf_c, l, r);
         pair <int,int> correct_ans = brute_force_solve(pref_a, b_pos, suf_c, l, r, s);
 
         cout << "My answer: " << my_ans << ' ' << "Correct answer: " << correct_ans.first << ' ';
