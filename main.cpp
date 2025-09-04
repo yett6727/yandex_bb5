@@ -7,7 +7,7 @@
 #include <utility>
 using namespace std;
 
-vector<pair<int, int>> generate_random_pairs(int n, int q) {
+vector<pair<int, int>> generate_random_pairs(int n, int q) { //queries for test
     vector<pair<int, int>> pairs;
     
     random_device rd;
@@ -30,7 +30,7 @@ vector<pair<int, int>> generate_random_pairs(int n, int q) {
 }
 
 
-string generate_random_string(int length) {
+string generate_random_string(int length) { //string for test
     const char chars[] = {'a', 'b', 'c'};
     string result;
     
@@ -44,7 +44,7 @@ string generate_random_string(int length) {
     return result;
 }
 
-int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int &l, int &r) {
+int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int &l, int &r) { //z solve
     auto iterator_l = lower_bound(b.begin(), b.end(), l);
     auto iterator_r = upper_bound(b.begin(), b.end(), r);
     if (iterator_r == iterator_l) {
@@ -82,7 +82,7 @@ int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int &l,
     return 2*ans + 1;
 }
 
-pair<int, int> brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <int>& c_suf, int& l, int& r, string& s) {
+pair<int, int> brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <int>& c_suf, int& l, int& r, string& s) { //brute force true solve
     int ans = 0;
     int working_b_pos;
     bool marker = false;
