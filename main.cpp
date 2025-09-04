@@ -20,6 +20,7 @@ int main() {
     for (int i = n; i > 0; i--) {
         c_suf[i] = c_suf[i+1] + (s[i-1] == 'c');
     }
+<<<<<<< HEAD
     
     while (q--) {
         int l, r;
@@ -29,6 +30,20 @@ int main() {
         if (iterator_r == iterator_l) {
             cout << 0 << endl;
             continue;
+=======
+ 
+    while (q--){ //query processing
+        int l = queries[q].first;
+        int r = queries[q].second;
+
+        int my_ans = my_solve(pref_a, b_pos, suf_c, l, r, s);
+        int correct_ans = brute_force_solve(pref_a, b_pos, suf_c, l, r, s);
+
+        cout << "My answer: " << my_ans << ' ' << "Correct answer: " << correct_ans << ' ';
+
+        if (my_ans == correct_ans){
+            cout << "✅ Correct!" << endl;
+>>>>>>> 2ad8cb2 (fixed q)
         }
         int ans = 0;
         int b_l = iterator_l - b.begin();
