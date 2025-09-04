@@ -91,8 +91,8 @@ pair<int, int> brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <
             marker = true;
             int a_count = a_pref[i-1] - a_pref[l-1]; 
             int c_count = c_suf[i+1] - c_suf[r+1];
+            if (min(couint_c, count_a) > ans) working_b_pos = i;
             ans =  max(ans, min(c_count, a_count));
-            working_b_pos = i;
         }
     }
     if(marker)return {2*ans + 1, working_b_pos};
