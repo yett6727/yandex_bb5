@@ -86,29 +86,23 @@ int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int l, 
 
 int brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <int>& c_suf, int& l, int& r, string& s) {
     int ans = 0;
-
-    bool marker=false;
-    // Ищем все позиции 'b' в диапазоне [l, r]
+    bool marker = false;
     for (int i = l; i <= r; i++) {
         if (s[i-1] == 'b') {
             marker = true;
-            // Считаем 'a' слева от текущей позиции
-            int a_count = a_pref[i-1] - a_pref[l-1];
-            // Считаем 'c' справа от текущей позиции
+            int a_count = a_pref[i-1] - a_pref[l-1]; 
             int c_count = c_suf[i+1] - c_suf[r+1];
-            ans = max(ans, min(a_count, c_count));
+            ans =  max(ans, min(c_count, a_count));
         }
     }
-    if (marker)return 2*ans + 1;
+    if(marker)return 2*ans + 1;
     return 0;
 }
 
 int main(){
     int n, q;
-    // Генерируем случайные значения вместо чтения из ввода
-    n = 100; // небольшая длина для быстрого тестирования
-    q = 50;  // небольшое количество запросов
-    
+    cin >> n >> q;
+
     string s = generate_random_string(n);
     cout << "String generated: " << s << endl;
 
@@ -118,63 +112,35 @@ int main(){
     vector <int> suf_c(n + 2, 0);
     vector <int> b_pos;
 
-    // Заполняем префиксные суммы для 'a'
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++){ //prefix/sufix sums
         pref_a[i + 1] = pref_a[i] + (s[i] == 'a');
-        if (s[i] == 'b') {
-            b_pos.push_back(i + 1); // сохраняем позиции (1-based)
-        }
+        if(s[i] == 'b') b_pos.push_back(i);
     }
-    
-    // Заполняем суффиксные суммы для 'c'
     for (int i = n; i > 0; i--) {
-        suf_c[i] = suf_c[i + 1] + (s[i - 1] == 'c');
+        suf_c[i] = suf_c[i+1] + (s[i-1] == 'c');
     }
-
-    int total_queries = queries.size();
-    for (int query_idx = 0; query_idx < total_queries; query_idx++) {
-        int l = queries[query_idx].first;
-        int r = queries[query_idx].second;
+ 
+    while (q--){ //query processing
+        int l = queries[q - 1].first;
+        int r = queries[q - 1].second;
 
         int my_ans = my_solve(pref_a, b_pos, suf_c, l, r, s);
         int correct_ans = brute_force_solve(pref_a, b_pos, suf_c, l, r, s);
 
-        cout << "Query " << query_idx + 1 << ": [" << l << ", " << r << "] - ";
-        cout << "My: " << my_ans << ", Correct: " << correct_ans << " - ";
+        cout << "My answer: " << my_ans << ' ' << "Correct answer: " << correct_ans << ' ';
 
         if (my_ans == correct_ans){
             cout << "✅ Correct!" << endl;
         }
-        else {
+        else { //debug info
             cout << "❌ Incorrect!" << endl;
 
-            cout << "String segment: ";
-            for (int i = l; i <= r; i++) cout << s[i-1];
+            cout << "Current query: " << l << ' ' << r << endl;
+            cout << "String segment ";
+            for (int i = l; i <= r; i++) cout << s[i - 1];
             cout << endl;
-            
-            // Детальная отладочная информация
-            cout << "Detailed analysis:" << endl;
-            cout << "All 'b' positions in range: ";
-            for (int pos : b_pos) {
-                if (pos >= l && pos <= r) {
-                    cout << pos << " ";
-                }
-            }
-            cout << endl;
-            
-            for (int i = l; i <= r; i++) {
-                if (s[i-1] == 'b') {
-                    int a_count = pref_a[i-1] - pref_a[l-1];
-                    int c_count = suf_c[i+1] - suf_c[r+1];
-                    cout << "At pos " << i << ": a_count=" << a_count << ", c_count=" << c_count 
-                         << ", min=" << min(a_count, c_count) << endl;
-                }
-            }
             
             return 1;
         }
     }
-    
-    cout << "All " << total_queries << " queries passed successfully!" << endl;
-    return 0;
 }
