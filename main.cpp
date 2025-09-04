@@ -119,8 +119,8 @@ int main(){
     }
  
     while (q--){ //query processing
-        int l = queries[q - 1].first;
-        int r = queries[q - 1].second;
+        int l = queries[q].first;
+        int r = queries[q].second;
 
         int my_ans = my_solve(pref_a, b_pos, suf_c, l, r, s);
         int correct_ans = brute_force_solve(pref_a, b_pos, suf_c, l, r, s);
