@@ -82,8 +82,9 @@ int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int l, 
     return 2*ans + 1;
 }
 
-int brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <int>& c_suf, int& l, int& r, string& s) {
+pair<int, int> brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <int>& c_suf, int& l, int& r, string& s) {
     int ans = 0;
+    int working_b_pos;
     bool marker = false;
     for (int i = l; i <= r; i++) {
         if (s[i-1] == 'b') {
@@ -91,10 +92,11 @@ int brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <int>& c_suf
             int a_count = a_pref[i-1] - a_pref[l-1]; 
             int c_count = c_suf[i+1] - c_suf[r+1];
             ans =  max(ans, min(c_count, a_count));
+            working_b_pos = i;
         }
     }
-    if(marker)return 2*ans + 1;
-    return 0;
+    if(marker)return {2*ans + 1, working_b_pos};
+    return {0, -1};
 }
 
 int main(){
@@ -123,11 +125,11 @@ int main(){
         int r = queries[q].second;
 
         int my_ans = my_solve(pref_a, b_pos, suf_c, l, r, s);
-        int correct_ans = brute_force_solve(pref_a, b_pos, suf_c, l, r, s);
+        pair <int,int> correct_ans = brute_force_solve(pref_a, b_pos, suf_c, l, r, s);
 
-        cout << "My answer: " << my_ans << ' ' << "Correct answer: " << correct_ans << ' ';
+        cout << "My answer: " << my_ans << ' ' << "Correct answer: " << correct_ans.first << ' ';
 
-        if (my_ans == correct_ans){
+        if (my_ans == correct_ans.first){
             cout << "✅ Correct!" << endl;
         }
         else { //debug info
@@ -136,7 +138,7 @@ int main(){
             cout << "Current query: " << l << ' ' << r << endl;
             cout << "String segment ";
             for (int i = l; i <= r; i++) cout << s[i - 1];
-            cout << endl;
+            cout << endl << "Bruteforce B pos: " << correct_ans.second;
             
             return 1;
         }
