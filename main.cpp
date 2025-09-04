@@ -1,6 +1,21 @@
 #include <bits/stdc++.h>
 using namespace std;
-  
+
+int findMin(const std::vector<int>& arr, vector <int>& a_pref, vector <int>& c_suf, int l, int r){
+    //int l = 0, r = arr.size() - 1;
+    while (l < r) {
+        int d = abs(a_pref[l-1] - c_suf[r+1]);
+
+        int mid = l + (r - l) / 2;
+        if (arr[mid] - d > arr[mid + 1] - d) {
+            l = mid + 1;
+        } else {
+            r = mid;
+        }
+    }
+    return arr[l];
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -20,7 +35,13 @@ int main() {
     for (int i = n; i > 0; i--) {
         c_suf[i] = c_suf[i+1] + (s[i-1] == 'c');
     }
+
+    vector <int> arr(b.size());
     
+    for (int i = 0; i < b.size(); i++){
+        arr[i] = abs(a_pref[b[i]] - c_suf[b[i]]);
+    }
+
     while (q--) {
         int l, r;
         cin >> l >> r;
@@ -30,35 +51,11 @@ int main() {
             cout << 0 << endl;
             continue;
         }
-        int ans = 0;
+
         int b_l = iterator_l - b.begin();
         int b_r = iterator_r - b.begin() - 1;
-        while (b_r - b_l > 10) {
-            int mid1 = b_l + (b_r - b_l) / 3;
-            int mid2 = b_r - (b_r - b_l) / 3;
-            
-            int pos1 = b[mid1];
-            int a1 = a_pref[pos1-1] - a_pref[l-1];
-            int c1 = c_suf[pos1+1] - c_suf[r+1];
-            int val1 = min(a1, c1);
-            
-            int pos2 = b[mid2];
-            int a2 = a_pref[pos2-1] - a_pref[l-1];
-            int c2 = c_suf[pos2+1] - c_suf[r+1];
-            int val2 = min(a2, c2);
-            
-            if (val1 < val2) {
-                b_l = mid1;
-            } else {
-                b_r = mid2;
-            }
-        }
-        for (int i = b_l; i <= b_r; i++) {
-            int pos = b[i];
-            int a_count = a_pref[pos-1] - a_pref[l-1];
-            int c_count = c_suf[pos+1] - c_suf[r+1];
-            ans = max(ans, min(a_count, c_count));
-        }
+
+        int ans = findMin(arr, a_pref, c_suf, l, r);
         cout << 2*ans + 1 << endl;
     }
 }
