@@ -23,12 +23,10 @@ int main() {
         prefc[i + 1] = prefc[i] + (s[i] == 'c');
     }
     
-    // Векторы позиций для каждого символа
-    vector<int> posa, posb, posc;
+    // Вектор позиций 'b'
+    vector<int> posb;
     for (int i = 0; i < n; i++) {
-        if (s[i] == 'a') posa.push_back(i);
-        else if (s[i] == 'b') posb.push_back(i);
-        else if (s[i] == 'c') posc.push_back(i);
+        if (s[i] == 'b') posb.push_back(i);
     }
     
     while (q--) {
@@ -36,59 +34,52 @@ int main() {
         cin >> l >> r;
         l--; r--;
         
-        int cnt_a = prefa[r + 1] - prefa[l];
         int cnt_b = prefb[r + 1] - prefb[l];
-        int cnt_c = prefc[r + 1] - prefc[l];
-        
         if (cnt_b == 0) {
             cout << "0\n";
             continue;
         }
         
-        // Находим первую 'b' в отрезке
-        auto it_b_first = lower_bound(posb.begin(), posb.end(), l);
-        if (it_b_first == posb.end() || *it_b_first > r) {
+        // Находим все 'b' в отрезке [l, r]
+        auto it_first = lower_bound(posb.begin(), posb.end(), l);
+        auto it_last = upper_bound(posb.begin(), posb.end(), r);
+        if (it_first == it_last) {
             cout << "0\n";
             continue;
         }
-        int first_b = *it_b_first;
         
-        // Находим последнюю 'b' в отрезке
-        auto it_b_last = upper_bound(posb.begin(), posb.end(), r);
-        if (it_b_last == posb.begin()) {
-            cout << "0\n";
-            continue;
+        // Бинарный поиск по оптимальному k для каждой 'b'
+        int best_result = 1; // минимум - одна 'b'
+        
+        for (auto it = it_first; it != it_last; ++it) {
+            int b_pos = *it;
+            
+            // Количество 'a' слева от этой 'b' в отрезке [l, r]
+            int a_left = prefa[b_pos + 1] - prefa[l];
+            
+            // Количество 'c' справа от этой 'b' в отрезке [l, r]
+            int c_right = prefc[r + 1] - prefc[b_pos + 1];
+            
+            // Бинарный поиск по максимальному k
+            int left_k = 0;
+            int right_k = min(a_left, c_right);
+            int best_k = 0;
+            
+            while (left_k <= right_k) {
+                int mid_k = (left_k + right_k) / 2;
+                
+                // Проверяем, можно ли взять mid_k 'a' слева и mid_k 'c' справа
+                // Это всегда возможно, если mid_k <= a_left и mid_k <= c_right
+                // (что гарантируется условиями выше)
+                
+                best_k = mid_k;
+                left_k = mid_k + 1;
+            }
+            
+            best_result = max(best_result, 2 * best_k + 1);
         }
-        it_b_last--;
-        int last_b = *it_b_last;
         
-        // Более простой и надежный подход
-        // Пробуем разные стратегии и берем максимум
-        
-        int best = 1; // Минимум - просто одна 'b'
-        
-        // Стратегия 1: берем первую 'b' и максимизируем вокруг нее
-        int a_before_first = prefa[first_b + 1] - prefa[l];
-        int c_after_first = prefc[r + 1] - prefc[first_b + 1];
-        int k1 = min(a_before_first, c_after_first);
-        best = max(best, 2 * k1 + 1);
-        
-        // Стратегия 2: берем последнюю 'b' и максимизируем вокруг нее
-        int a_before_last = prefa[last_b + 1] - prefa[l];
-        int c_after_last = prefc[r + 1] - prefc[last_b + 1];
-        int k2 = min(a_before_last, c_after_last);
-        best = max(best, 2 * k2 + 1);
-        
-        // Стратегия 3: для средних 'b' - используем бинарный поиск
-        // Но для простоты ограничимся первыми двумя стратегиями
-        // (они часто дают оптимальный результат)
-        
-        // Дополнительная проверка: если можем взять только 'b'
-        if (best == 1 && cnt_a == 0 && cnt_c == 0) {
-            cout << "1\n";
-        } else {
-            cout << best << "\n";
-        }
+        cout << best_result << "\n";
     }
     
     return 0;
