@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int findMin(const std::vector<int>& arr, vector <int>& a_pref, vector <int>& c_suf, int l, int r){
-    //int l = 0, r = arr.size() - 1;
+int findMin(const std::vector<int>& arr, vector <int>& a_pref, vector <int>& c_suf, int l, int r, vector <int> b){
     while (l < r) {
-        int d = abs(a_pref[l-1] - c_suf[r+1]);
+        int d = abs(a_pref[b[l]-1] - c_suf[b[r]+1]);
 
         int mid = l + (r - l) / 2;
         if (arr[mid] - d > arr[mid + 1] - d) {
@@ -18,7 +17,7 @@ int findMin(const std::vector<int>& arr, vector <int>& a_pref, vector <int>& c_s
 
 int main() {
     ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+    cin.tie(0);
     int n, q;
     cin >> n >> q;
     string s;
@@ -55,7 +54,7 @@ int main() {
         int b_l = iterator_l - b.begin();
         int b_r = iterator_r - b.begin() - 1;
 
-        int ans = findMin(arr, a_pref, c_suf, l, r);
+        int ans = findMin(arr, a_pref, c_suf, b_l, b_r, b);
         cout << 2*ans + 1 << endl;
     }
 }
