@@ -5,6 +5,37 @@
 #include <climits>
 using namespace std;
 
+int binary_search(vector <int> prefa, vector <int> prefc, vector <int> posb, int l, int r){
+    auto it_first = lower_bound(posb.begin(), posb.end(), l);
+    auto it_last = upper_bound(posb.begin(), posb.end(), r);
+    if (it_first == it_last)
+        return 0;
+
+    int best_result = 0;
+        
+    for (auto it = it_first; it != it_last; it++) {
+        int b_pos = *it;
+
+        int a_left = prefa[b_pos + 1] - prefa[l];
+        int c_right = prefc[r + 1] - prefc[b_pos + 1];
+
+        int left_k = 0;
+        int right_k = min(a_left, c_right);
+        int best_k = 0;
+            
+        while (left_k <= right_k) {
+            int mid_k = (left_k + right_k) / 2;
+                
+            best_k = mid_k;
+            left_k = mid_k + 1;
+        }
+            
+        best_result = max(best_result, best_k);
+    }
+        
+    return 2 * best_result + 1;
+}
+
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(0);
