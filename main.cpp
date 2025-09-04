@@ -31,7 +31,7 @@ int main() {
     }
     
     // Для каждой позиции 'b' считаем разницу: (a слева) - (c справа)
-    vector<int> diff(n, INT_MAX);
+    vector<int> diff(n, INT_MAX); 
     vector<int> b_positions;
     
     for (int i = 0; i < n; i++) {
@@ -63,27 +63,21 @@ int main() {
         l--; r--;
         
         int cnt_b = prefb[r + 1] - prefb[l];
-        if (cnt_b == 0) {
-            cout << "0\n";
-            continue;
-        }
-        
-        // Находим минимальную разницу на отрезке
         int min_diff = min_diff_in_range(l, r);
-        if (min_diff == INT_MAX) {
-            cout << "0\n";
+
+        if (cnt_b == 0 || min_diff == INT_MAX) {
+            cout << 0 << endl;
             continue;
         }
         
         // Количество 'a' слева от первой 'b' в отрезке
-        auto first_b_it = lower_bound(b_positions.begin(), b_positions.end(), l);
-        int first_b = *first_b_it;
+        int first_b = *lower_bound(b_positions.begin(), b_positions.end(), l);
         int a_before_first_b = prefa[first_b + 1] - prefa[l];
         
         // Количество 'c' справа от последней 'b' в отрезке
         auto last_b_it = upper_bound(b_positions.begin(), b_positions.end(), r);
         if (last_b_it == b_positions.begin()) {
-            cout << "0\n";
+            cout << 0 << endl;
             continue;
         }
         last_b_it--;
