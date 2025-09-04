@@ -1,4 +1,5 @@
 #include <iostream>
+#include <bits/stdc++.h>
 #include <string>
 #include <vector>
 #include <chrono>
@@ -85,6 +86,11 @@ int my_solve(vector <int> &a_pref, vector <int> &b, vector <int> &c_suf, int l, 
 
 int brute_force_solve(vector <int>& a_pref, vector <int>& b, vector <int>& c_suf, int& l, int& r, string& s) {
     int ans = 0;
+    auto iterator_l = lower_bound(b.begin(), b.end(), l);
+    auto iterator_r = upper_bound(b.begin(), b.end(), r);
+    if (iterator_r == iterator_l) {
+        return 0;
+    }
     for (int i = l; i <= r; i++) {
         if (s[i-1] == 'b') {
             int a_count = a_pref[i-1] - a_pref[l-1]; 
