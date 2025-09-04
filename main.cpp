@@ -7,6 +7,29 @@
 #include <utility>
 using namespace std;
 
+vector<pair<int, int>> generate_random_pairs(int n, int q) {
+    vector<pair<int, int>> pairs;
+    
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1, n);
+    
+    for (int i = 0; i < q; i++) {
+        int a = dist(gen);
+        int b = dist(gen);
+        
+        // Если первое число больше второго - меняем местами
+        if (a > b) {
+            std::swap(a, b);
+        }
+        
+        pairs.emplace_back(a, b);
+    }
+    
+    return pairs;
+}
+
+
 string generate_random_string(int length) {
     const char chars[] = {'a', 'b', 'c'};
     string result;
@@ -16,31 +39,6 @@ string generate_random_string(int length) {
     
     for (int i = 0; i < length; ++i) {
         result += chars[distribution(generator)];
-    }
-    
-    return result;
-}
-
-vector<pair<int, int>> generate_random_pairs(int max_pairs, int upper_bound) {
-    vector<pair<int, int>> result;
-    
-    mt19937 generator(chrono::system_clock::now().time_since_epoch().count());
-    uniform_int_distribution<int> pairs_dist(1, max_pairs);
-    uniform_int_distribution<int> num_dist(1, upper_bound);
-    
-    int pairs_count = pairs_dist(generator);
-    result.reserve(pairs_count);
-    
-    for (int i = 0; i < pairs_count; ++i) {
-        int l = num_dist(generator);
-        int r = num_dist(generator);
-        
-        // Гарантируем, что l ≤ r
-        if (l > r) {
-            swap(l, r);
-        }
-        
-        result.push_back({l, r});
     }
     
     return result;
@@ -106,7 +104,7 @@ int main(){
     string s = generate_random_string(n);
     cout << "String generated: " << s << endl;
 
-    vector <pair<int,int>> queries = generate_random_pairs(q, n);
+    vector <pair<int,int>> queries = generate_random_pairs(n, q);
 
     vector <int> pref_a(n + 1, 0);
     vector <int> suf_c(n + 2, 0);
