@@ -1,20 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int findMin(const std::vector<int>& arr, vector <int>& a_pref, vector <int>& c_suf, int l, int r, vector <int> b){
-    while (l < r) {
-        int d = abs(a_pref[b[l]-1] - c_suf[b[r]+1]);
-
-        int mid = l + (r - l) / 2;
-        if (arr[mid] - d > arr[mid + 1] - d) {
-            l = mid + 1;
-        } else {
-            r = mid;
-        }
-    }
-    return l;
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(0);
@@ -39,28 +25,32 @@ int main() {
         c_suf[i] = c_suf[i+1] + (s[i-1] == 'c');
     }
 
-    vector <int> arr(b.size());
-    
-    for (int i = 0; i < b.size(); i++){
-        arr[i] = abs(a_pref[b[i]] - c_suf[b[i]]);
-    }
-
-    while (q--) {
+    while (q--){
         int l, r;
         cin >> l >> r;
 
-        auto iterator_l = lower_bound(b.begin(), b.end(), l);
-        auto iterator_r = upper_bound(b.begin(), b.end(), r);
+        int l_it = l;
+        int r_it = r;
 
-        if (iterator_r == iterator_l) {
+        if (lower_bound(b.begin(), b.end(), l_it) == upper_bound(b.begin(), b.end(), r_it)){
             cout << 0 << endl;
             continue;
         }
+        
+        while (l_it < r_it){
+            int mid = (r_it + l_it) / 2;
 
-        int b_l = iterator_l - b.begin();
-        int b_r = iterator_r - b.begin() - 1;
+            int a_it = lower_bound(a_pref.begin() + l_it, a_pref.end(), mid + a_pref[l_it - 1]) - a_pref.begin();
+            if (a_it >= r_it) continue;
 
-        int ans = findMin(arr, a_pref, c_suf, b_l, b_r, b);
-        cout << 2*(a_pref[ans] - a_pref[b_l]) + 1 << endl;
+            int b_it = lower_bound(b.begin(), b.end(), a_it) - b.begin();
+            if(b_it == b.size()) continue;
+            if(b[b_it] > r_it) continue;
+
+            if(c_suf[b_it] - c_suf[r_it + 1] < mid) l_it = mid;
+            else r_it = mid;
+        }
+
+        cout << 2 * l_it + 1 << endl;
     }
 }
