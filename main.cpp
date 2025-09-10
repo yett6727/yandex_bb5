@@ -38,7 +38,7 @@ int main() {
         }
         
         while (l_it < r_it){
-            int mid = (r_it + l_it) / 2;
+            int mid = (r_it + l_it) / 2; cout << '!' << mid << ' '; //debug
 
             int a_it = lower_bound(a_pref.begin() + l_it, a_pref.end(), mid + a_pref[l_it - 1]) - a_pref.begin();
             if (a_it >= r_it){
