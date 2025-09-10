@@ -41,11 +41,17 @@ int main() {
             int mid = (r_it + l_it) / 2;
 
             int a_it = lower_bound(a_pref.begin() + l_it, a_pref.end(), mid + a_pref[l_it - 1]) - a_pref.begin();
-            if (a_it >= r_it) continue;
+            if (a_it >= r_it){
+                r_it = mid;
+                continue;
+            }
 
             int b_it = lower_bound(b.begin(), b.end(), a_it) - b.begin();
             if(b_it == b.size()) continue;
-            if(b[b_it] > r_it) continue;
+            if(b[b_it] > r_it){
+                r_it = mid;
+                continue;
+            }
 
             if(c_suf[b_it] - c_suf[r_it + 1] < mid) l_it = mid;
             else r_it = mid;
