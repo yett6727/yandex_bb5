@@ -40,23 +40,42 @@ int main() {
         while (l_it < r_it){
             int mid = (r_it + l_it) / 2;
 
-            int a_it = lower_bound(a_pref.begin() + l_it, a_pref.end(), mid + a_pref[l_it - 1]) - a_pref.begin();
-            if (a_it >= r_it){
-                r_it = mid;
+            int left_a = l;
+            int right_a = r;
+            int a_pos = r + 1;
+            
+            while (left_a <= right_a) {
+                int mid_a = (left_a + right_a) / 2;
+                if (a_pref[mid_a] - a_pref[l-1] >= mid) {
+                    a_pos = mid_a;
+                    right_a = mid_a - 1;
+                } else {
+                    left_a = mid_a + 1;
+                }
+            }
+            
+            if (a_pos > r) {
+                r_it = mid - 1;
                 continue;
             }
 
-            int b_it = lower_bound(b.begin(), b.end(), a_it) - b.begin();
-            if(b_it == b.size()) continue;
-            if(b[b_it] > r_it){
-                r_it = mid;
+            auto b_it = lower_bound(b.begin(), b.end(), a_pos);
+            if (b_it == b.end() || *b_it > r) {
+                r_it = mid - 1;
                 continue;
             }
+            int b_pos_val = *b_it;
 
-            if(c_suf[b_it] - c_suf[r_it + 1] < mid) l_it = mid;
-            else r_it = mid;
+            int c_needed = mid;
+            int actual_c = c_suf[b_pos_val + 1] - c_suf[r + 1];
+            
+            if (actual_c >= c_needed) {
+                l_it = mid + 1;
+            } else {
+                r_it = mid - 1;
+            };
         }
 
-        cout << 2 * l_it + 1 << endl;
+        cout << 2 * (l_it - 1) + 1 << endl;
     }
 }
